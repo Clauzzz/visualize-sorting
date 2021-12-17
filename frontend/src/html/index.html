@@ -2,7 +2,8 @@
 <html>
     <head>
         <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
-        <link rel="stylesheet" href="./frontend/dist/styles/general.css" type="text/css"
+        <link rel="stylesheet" href="./frontend/dist/styles/general.css" type="text/css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;900&display=swap" rel="stylesheet">
     </head>
     <body>
         <div id="main">
@@ -10,36 +11,30 @@
 
             </canvas>
             <div class="sorting_toolbar_container">
+                <label>Range Min</label>
+                <input type="number" value="0" id="rangeMin">
+                <label>Range Max</label>
+                <input type="number" value="100" id="rangeMax">
+                <label>Numbers length</label>
+                <input type="number" value="32" id="numberLength">
+                <button id="generate">Generate</button>
                 <div class="sorting_alg_container">
-                    <div class="sorting_alg_item">
-                        Selection
-                    </div>
+                    <button data-sort="bubbleSort">Bubble Sort</button>
+                    <button data-sort="selectionSortMin">Selection - Min</button>
+                    <button data-sort="insertionSort">Insertion Sort</button>
+                    <button data-sort="mergeSort">Merge Sort</button>
+                    <button data-sort="quickSort">Quick Sort</button>
                 </div>
+                <button id="generate">Generate</button>
                 <div class="sorting_actions_container">
                     <div class="sorting_actions_container_row">
-                        <div class="sorting_actions_item">
-                            <img src="./frontend/dist/images/play.svg">
-                        </div>
-                        <!-- <div class="sorting_actions_item">
-                            <img src="./frontend/dist/images/pause.svg">
-                        </div> -->
-                    </div>
-                    <div class="sorting_actions_container_row">
-                        <div class="sorting_actions_item">
-                            <img src="./frontend/dist/images/backwards.svg">
-                        </div>
-                        <div class="sorting_actions_item">
-                            <img src="./frontend/dist/images/stop.svg">
-                        </div>
-                        <div class="sorting_actions_item">
-                            <img src="./frontend/dist/images/forwards.svg">
-                        </div>
-                    </div>
-                    <div class="sorting_actions_container_row">
-                        <div class="sorting_actions_item">
+                        <div id="decrease" class="sorting_actions_item">
                             <img src="./frontend/dist/images/minus.svg">
                         </div>
-                        <div class="sorting_actions_item">
+                        <div id="speed" class="sorting_action_speed">
+
+                        </div>
+                        <div id="increase" class="sorting_actions_item">
                             <img src="./frontend/dist/images/plus.svg">
                         </div>
                     </div>
@@ -47,7 +42,7 @@
             </div>
         </div>
         <script type ="text/javascript" src="./frontend/dist/scripts/point.js"></script>
-        <script type ="text/javascript" src="./frontend/dist/scripts/bar.js"></script>
+        <script type ="text/javascript" src="./frontend/dist/scripts/number.js"></script>
         <script type ="text/javascript" src="./frontend/dist/scripts/canvas.js"></script>
         <script type ="text/javascript" src="./frontend/dist/scripts/sorting.js"></script>
         <script type ="text/javascript" src="./frontend/dist/scripts/main.js"></script>
