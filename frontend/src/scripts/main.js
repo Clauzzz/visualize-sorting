@@ -1,3 +1,10 @@
+Array.prototype.spliceArray = function ( index, splicedArray) {
+    for(let i= splicedArray.length-1; i>=0; i--)
+    {
+        this.splice(index, 0, splicedArray[i]);
+    }
+    return this;
+}
 class Main
 {
     static canvas;
@@ -9,10 +16,13 @@ class Main
     static running;
 
     static defaultColor = "rgba(127,127,255,1)";
-    static indexColor = "rgba(255,0,0,1)";
-    static selectedColor = "rgba(255,255,0,1)";
-    static switchColors = "rgba(0,255,0,1)";
-    static finalColor = "rgba(0,255,255,1)";
+    static indexColor = "rgba(255,127,127,1)";
+    static selectedColor = "rgba(255,255,127,1)";
+    static switchColors = "rgba(127,255,127,1)";
+    static finalColor = "rgba(127,127,127,1)";
+    static pivotColor = "rgba(255,255,255,1)";
+    static canvasPadding = 30;
+    static canvasMargin = 6;
 
     static initialize = () =>
     {
@@ -51,7 +61,7 @@ class Main
     }
     static increaseSpeed = () =>
     {
-        if(Main.timer>2)
+        if(Main.timer>1)
         {
             Main.timer = Main.timer / 2;
         }
@@ -104,36 +114,45 @@ class Main
         }
         return numbers;
     }
+    static drawState = (numbers) => {
+        Main.canvas.clearCanvas();
+        let maxH = Main.canvas.height;
+        let maxW = Main.canvas.width;
+        let barW = (maxW - 2* Main.canvasPadding + Main.canvasMargin) / numbers.length - Main.canvasMargin;
+        let minBW = Main.canvasPadding;
+        let minBH = Main.canvasPadding;
+        let maxBH = maxH - Main.canvasPadding;
+        let maxN;
+        if(numbers && numbers.length && typeof numbers[0] == 'number') {
+            maxN = Math.max(...numbers);
+        } else if(numbers && numbers.length && typeof numbers[0] == 'object') {
+            maxN = Math.max(...numbers.map(x=>x.number));
+        }
+        Main.numbers = [];
+        for(let i=0; i<numbers.length; i++)
+        {
+            let pointBottomLeft = new Point(minBW + i*(barW + Main.canvasMargin), maxBH);
+            let pointTopRight;
+            let number;
+            if(numbers[i].id ) {
+                pointTopRight = new Point(minBW + i*(barW + Main.canvasMargin) + barW ,maxBH - Math.floor(numbers[i].number/maxN * (maxBH -minBH)));
+                number = new NumberBar(pointBottomLeft, pointTopRight, numbers[i].number, numbers[i].id);
+            } else {
+                pointTopRight = new Point(minBW + i*(barW + Main.canvasMargin) + barW ,maxBH - Math.floor(numbers[i]/maxN * (maxBH -minBH)));
+                number = new NumberBar(pointBottomLeft, pointTopRight, numbers[i]);
+            }
+            number.draw();
+            Main.numbers.push(number);
+        }
+    }
     static drawBars = (numbers, canvas) =>
     {
-        
         if(!canvas) {
             let mainCanvas = document.getElementById('sortingCanvas');
             Main.canvas = new Canvas('main',mainCanvas,1);
             Main.canvas.calculateSizesBasedOnScreen();
-            canvas = Main.canvas;
         }
-        canvas.clearCanvas();
-        let maxH = canvas.height;
-        let maxW = canvas.width;
-        let padding = 30;
-        let margin = 6;
-
-        let barW = (maxW - 2*padding + margin) / numbers.length - margin;
-        let minBW = padding;
-        let minBH = padding;
-        let maxBW = maxW - padding; 
-        let maxBH = maxH - padding;
-        let maxN = Math.max(...numbers);
-        Main.numbers = [];
-        for(let i=0; i<numbers.length; i++)
-        {
-            let pointBottomLeft = new Point(minBW + i*(barW + margin), maxBH);
-            let pointTopRight = new Point(minBW + i*(barW + margin) + barW ,maxBH - Math.floor(numbers[i]/maxN * (maxBH -minBH)));
-            let number = new NumberBar(pointBottomLeft, pointTopRight, numbers[i]);
-            number.draw();
-            Main.numbers.push(number);
-        }
+        Main.drawState(numbers);
     }
     static sleep = (delay) =>
     {

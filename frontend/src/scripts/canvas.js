@@ -54,11 +54,39 @@ class Canvas
         numberA.highlight(Main.defaultColor);
         await Main.sleep(Main.timer);
     }
+    drawStates = async( tree ) => {
+        Main.drawState(tree.state);
+        for(let i=0;i<Main.numbers.length;i++) {
+            if(tree.pivot && tree.pivot.id && Main.numbers[i].id == tree.pivot.id) {
+                Main.numbers[i].highlight(Main.pivotColor);
+            } else if(tree && tree.index && tree.index.id && Main.numbers[i].id == tree.index.id) {
+                Main.numbers[i].highlight(Main.indexColor);
+            }
+        }
+        await Main.sleep(Main.timer);
+        if(tree.newstate) {
+            Main.drawState(tree.newstate);
+            for(let i=0;i<Main.numbers.length;i++) {
+                if(tree.pivot && tree.pivot.id && Main.numbers[i].id == tree.pivot.id) {
+                    Main.numbers[i].highlight(Main.pivotColor);
+                } else if(tree && tree.index && tree.index.id && Main.numbers[i].id == tree.index.id) {
+                    Main.numbers[i].highlight(Main.switchColors);
+                }
+            }
+        }
+        await Main.sleep(Main.timer);
+        if(tree.next && tree.next.state) {
+            return Main.canvas.drawStates(tree.next);
+        } else {
+            Main.canvas.highlightFinalGroup(Main.numbers);
+            return;
+        }
+    }
     clearCanvas = () => {
         this.contextInput.clearRect(0, 0, this.width, this.height);
     }
     deleteArea = (pointA, pointB) => {
-        this.contextInput.clearRect(pointA.x-3, pointB.y-3, pointB.x - pointA.x + 6, pointA.y -  pointB.y + 6);
+        this.contextInput.clearRect(pointA.x - Main.canvasMargin/2, 0, pointB.x - pointA.x + Main.canvasMargin, Main.canvas.height);
     }
     drawLine = (pointA, pointB) => {
         this.contextInput.strokeStyle = 'white';

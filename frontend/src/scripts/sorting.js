@@ -36,7 +36,6 @@ class Sorting {
             return finalArr;
         }
         function mergeS (numberArray, level, tree) {
-
             if(numberArray.length == 1) {
                 return numberArray;
             } else {
@@ -73,8 +72,65 @@ class Sorting {
             await Main.canvas.highlightFinalGroup(Main.numbers);
         }
     }
-    static quickSort = async (numbers) => {
+    static quickSort =  async (allNumbers) => {
+        let tree = {};
+        let comparisons = 0;
+        const qs = (numbers, start, end) => {
+            let firstEnd = end;
+            let pivot = numbers[end];
+            let numbersCopy = JSON.parse(JSON.stringify(numbers));
+            if(start == end) {
+                tree.index = numbersCopy[0];
+                tree.state = numbersCopy;
+                tree.pivot = pivot;
+                tree.next = {};
+                tree.next.back = tree;
+                tree = tree.next;
+                return numbers;
+            }
+            for(let i = start; i<end;i++) {
+                let stateNumbers = JSON.parse(JSON.stringify(numbersCopy));
+                tree.index = numbersCopy[i];
+                tree.state = stateNumbers;
+                tree.pivot = pivot;
+                tree.next = {};
+                tree.next.back = tree;
+                if(numbersCopy[i].number > pivot.number) {
+                    comparisons++;
+                    let aux = numbersCopy[i];
+                    numbersCopy.splice(i,1);
+                    numbersCopy.splice(firstEnd,0,aux);
+                    let newState = JSON.parse(JSON.stringify(numbersCopy));
+                    tree.newindex = end;
+                    tree.newstate = newState;
+                    end--;
+                    i--;
+                } else {
+                    tree.newindex = i;
+                    tree.newstate = stateNumbers;
+                }
+                tree = tree.next;
+            }
+            if(end-1 >=start) {
+                numbersCopy = qs(numbersCopy, start, end-1);
+            }
+            if(firstEnd>=end+1) {
+                numbersCopy = qs(numbersCopy, end+1, firstEnd);
+            }
+            return numbersCopy;
 
+        }
+        let justNumbers = allNumbers.map(x => {return {'number': x.number, 'id' : x.id};});
+        let doSort = qs(justNumbers, 0, justNumbers.length-1);
+        while(!tree.state && tree.back) {
+            tree = tree.back;
+        }
+        delete tree.next;
+        while(tree.back) {
+            tree = tree.back;
+        }
+        console.log(comparisons);
+        await Main.canvas.drawStates(tree);
     }
     static insertionSort = async (numbers) => {
         for(let i=0; i<numbers.length;i++) {
