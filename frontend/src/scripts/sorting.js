@@ -129,7 +129,6 @@ class Sorting {
         while(tree.back) {
             tree = tree.back;
         }
-        console.log(comparisons);
         await Main.canvas.drawStates(tree);
     }
     static insertionSort = async (numbers) => {

@@ -55,32 +55,35 @@ class Canvas
         await Main.sleep(Main.timer);
     }
     drawStates = async( tree ) => {
-        Main.drawState(tree.state);
-        for(let i=0;i<Main.numbers.length;i++) {
-            if(tree.pivot && tree.pivot.id && Main.numbers[i].id == tree.pivot.id) {
-                Main.numbers[i].highlight(Main.pivotColor);
-            } else if(tree && tree.index && tree.index.id && Main.numbers[i].id == tree.index.id) {
-                Main.numbers[i].highlight(Main.indexColor);
-            }
-        }
-        await Main.sleep(Main.timer);
-        if(tree.newstate) {
-            Main.drawState(tree.newstate);
+        if(Sorting.isRunning) {
+            Main.drawState(tree.state);
             for(let i=0;i<Main.numbers.length;i++) {
                 if(tree.pivot && tree.pivot.id && Main.numbers[i].id == tree.pivot.id) {
                     Main.numbers[i].highlight(Main.pivotColor);
                 } else if(tree && tree.index && tree.index.id && Main.numbers[i].id == tree.index.id) {
-                    Main.numbers[i].highlight(Main.switchColors);
+                    Main.numbers[i].highlight(Main.indexColor);
                 }
             }
+            await Main.sleep(Main.timer);
+            if(tree.newstate) {
+                Main.drawState(tree.newstate);
+                for(let i=0;i<Main.numbers.length;i++) {
+                    if(tree.pivot && tree.pivot.id && Main.numbers[i].id == tree.pivot.id) {
+                        Main.numbers[i].highlight(Main.pivotColor);
+                    } else if(tree && tree.index && tree.index.id && Main.numbers[i].id == tree.index.id) {
+                        Main.numbers[i].highlight(Main.switchColors);
+                    }
+                }
+            }
+            await Main.sleep(Main.timer);
+            if(tree.next && tree.next.state) {
+                return Main.canvas.drawStates(tree.next);
+            } else {
+                Main.canvas.highlightFinalGroup(Main.numbers);
+                return;
+            }
         }
-        await Main.sleep(Main.timer);
-        if(tree.next && tree.next.state) {
-            return Main.canvas.drawStates(tree.next);
-        } else {
-            Main.canvas.highlightFinalGroup(Main.numbers);
-            return;
-        }
+        return;
     }
     clearCanvas = () => {
         this.contextInput.clearRect(0, 0, this.width, this.height);

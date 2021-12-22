@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Sorting Visualizer</title>
         <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
         <link rel="stylesheet" href="./frontend/dist/styles/general.css" type="text/css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="./frontend/dist/images/icon.svg" type="image/x-icon"/>
+        <base href="http://localhost:9000/" target="_self">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;900&display=swap" rel="stylesheet">
     </head>
     <body>
@@ -10,36 +14,107 @@
             <canvas id="sortingCanvas">
 
             </canvas>
-            <div class="sorting_toolbar_container">
-                <label>Range Min</label>
-                <input type="number" value="0" id="rangeMin">
-                <label>Range Max</label>
-                <input type="number" value="100" id="rangeMax">
-                <label>Numbers length</label>
-                <input type="number" value="32" id="numberLength">
-                <button id="generate">Generate</button>
-                <button id="generate">Export numbers</button>
-                <textarea></textarea>
-                <button id="generate">Import numbers</button>
-                <div class="sorting_alg_container">
-                    <button data-sort="bubbleSort">Bubble Sort</button>
-                    <button data-sort="selectionSortMin">Selection - Min</button>
-                    <button data-sort="insertionSort">Insertion Sort</button>
-                    <button data-sort="mergeSort">Merge Sort</button>
-                    <button data-sort="quickSort">Quick Sort</button>
+            <div id="explanation_modal_background" class="explanation_modal_background">
+                <button id="modal_close"><img src="./frontend/dist/images/close.png"></button>
+                <div class="explanation_modal">
+                    <div class="explanation_modal_title">Sorting Visualizer</div>
+                    <div class="explanation_modal_text">
+                        <p>
+                            Hello! This is a sorting visualizer, meaning you can visualize different sorting algorithms. The ones listed are some of the
+                            better known ones. You should first start by generating a random array ( group ) of numbers. Initially you start with 32 numbers,
+                            but you can change the number by pressing "+" or the "-" under "Numbers length" and then pressing "Generate". You can press "Generate"
+                            again if you want to get a new random group of numbers.
+                        </p>
+                        <div class="explanation_modal_subtitle">
+                            Sorting Algorithms
+                        </div>
+                        
+                        <ol>
+                            <li>
+                                <span>Bubble Sort</span> is one of the more inefficient algorithms, as it passes through the array several times.
+                                The way it works is it compares adjacent numbers as it's passing through the array and the bigger one gets moved to the right. The bigger numbers rise like "bubbles" in water. Eventually the entire array will be sorted.  
+                            </li>
+                            <li>
+                                <span>Selection Sort</span> works by selecting either the smallest (minimum) or the biggest (maximum) element in the array, and it moves it either outmost to the left (for minimum) or the right (for maximum).
+                            </li>
+                            <li>
+                                <span>Insertion Sort</span> works by moving elements to the left as long as they are smaller. This slowly builds a group of sorted numbers.
+                            </li>
+                            <!-- <li>
+                                <span>Merge Sort</span> first divides the entire group into halves repeatedly, until you get "n" groups ( n being the number of elements), each with one number.
+                                Afterwards, these groups get sorted and merged gradually into ever larger groups.
+                            </li> -->
+                            <li>
+                                <span>Quick Sort</span> starts by choosing a number as "pivot" (reference). In this example it will be the right-most element. After that, we start from the left and we go through the array.
+                                The elements which are bigger get placed after the pivot, while the smaller elements will stay on the left. Once this is done we repeat the same process for the two groups (of smaller and bigger numbers compared to the pivot).
+                                Eventually all the elements will be sorted. 
+                            </li>
+                        </ol>
+                    </div>
                 </div>
+            </div>
+
+            <div style="width: 0%;">
+                <div class="panel_title">Animation speed</div>
                 <div class="sorting_actions_container">
                     <div class="sorting_actions_container_row">
                         <div id="decrease" class="sorting_actions_item">
                             <img src="./frontend/dist/images/minus.svg">
                         </div>
                         <div id="speed" class="sorting_action_speed">
-
+    
                         </div>
                         <div id="increase" class="sorting_actions_item">
                             <img src="./frontend/dist/images/plus.svg">
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="toolbar_shortcuts">
+                <div id="generate_shortcut"><img src="./frontend/dist/images/generate.png"></div>
+                <div></div>
+                <div class="sort_shortcut" data-sort="bubbleSort"><img src="./frontend/dist/images/bubble.png"></div>
+                <div class="sort_shortcut" data-sort="selectionSortMin"><img src="./frontend/dist/images/selection.png"></div>
+                <div class="sort_shortcut" data-sort="insertionSort"><img src="./frontend/dist/images/insertion.png"></div>
+                <!-- <div class="sort_shortcut" data-sort="mergeSort"><img src="./frontend/dist/images/merge.png"></div> -->
+                <div class="sort_shortcut" data-sort="quickSort"><img src="./frontend/dist/images/quick.png"></div>
+            </div>
+            <div class="help_icon">
+                <img src="./frontend/dist/images/help.png">
+            </div>
+            <div class="toolbar_toggle_body">
+                <div class="toolbar_toggle"><img id="toolbar_toggle_icon" data-toggled="true" src="./frontend/dist/images/left-arrow.svg"></div>
+            </div>
+            <div class="sorting_toolbar_container">
+                <div class="panel_title">Sorting Visualizer<div><img src="./frontend/dist/images/sorting.png"></div></div>
+                <div class="range_group">
+                    <label>Range Min</label>
+                    <input value="0" id="rangeMin">
+                </div>
+                <div class="range_group">
+                    <label>Range Max</label>
+                    <input value="100" id="rangeMax">
+                </div>
+
+                <div class="panel_title">Numbers length</div>
+                <div class="sorting_actions_container_row">
+                    <div id="decreaseLength" class="sorting_actions_item">
+                        <img src="./frontend/dist/images/minus.svg">
+                    </div>
+                    <div id="numberLength" class="sorting_action_speed">32
+                    </div>
+                    <div id="increaseLength" class="sorting_actions_item">
+                        <img src="./frontend/dist/images/plus.svg">
+                    </div>
+                </div>
+                <button class="menu_button" id="generate">Generate<div><img src="./frontend/dist/images/generate.png"></div></button>
+                <div class="panel_title">Sorting algorithms</div>
+                <div class="sorting_alg_container">
+                    <button class="menu_button" data-sort="bubbleSort">Bubble Sort <div><img src="./frontend/dist/images/bubble.png"></div></button>
+                    <button class="menu_button" data-sort="selectionSortMin">Selection - Min <div><img src="./frontend/dist/images/selection.png"></div></button>
+                    <button class="menu_button" data-sort="insertionSort">Insertion Sort <div><img src="./frontend/dist/images/insertion.png"></div></button>
+                    <!-- <button class="menu_button" data-sort="mergeSort">Merge Sort <div><img src="./frontend/dist/images/merge.png"></div></button> -->
+                    <button class="menu_button" data-sort="quickSort">Quick Sort <div><img src="./frontend/dist/images/quick.png"></div></button>
                 </div>
             </div>
         </div>

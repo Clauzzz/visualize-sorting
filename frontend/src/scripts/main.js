@@ -26,23 +26,120 @@ class Main
 
     static initialize = () =>
     {
+        Main.setCanvasMarginBasedOnScreen();
         Main.createCanvas();
         Main.addSortListeners();
         Main.addSpeedListeners();
+        Main.addNumberLengthListener();
         Main.setSpeedLabel();
         Main.addGenerateNumbersListener();
         Main.generateSetOfNumbers();
+        Main.addModalListeners();
+        Main.addToolbarListener();
+        
+    }
+    static toggleToolbar = () => {
+        let icon = document.getElementById('toolbar_toggle_icon');
+        let toolbar = document.getElementsByClassName('sorting_toolbar_container')[0];
+        let toggleBody = document.getElementsByClassName('toolbar_toggle_body')[0];
+        let toolbarShortcuts = document.getElementsByClassName('toolbar_shortcuts')[0];
+        if(icon.dataset.toggled == 'true') {
+            icon.dataset.toggled = 'false';
+            icon.style.animationName = 'rotateArrowRight';
+            toolbar.style.animationName = 'slideToLeft';
+            toggleBody.style.animationName = 'slideToLeft';
+            setTimeout(function () {
+                toolbarShortcuts.style.display = 'flex';
+                toolbarShortcuts.style.animationName = 'fadeIn';
+            }, 500);
+        } else {
+            icon.dataset.toggled = 'true';
+            icon.style.animationName = 'rotateArrowLeft';
+            toolbar.style.animationName = 'slideToRight';
+            toggleBody.style.animationName = 'slideToRight';
+            toolbarShortcuts.style.display = 'none';
+        }
+    }
+    static addToolbarListener = () => {
+        let icon = document.getElementById('toolbar_toggle_icon');
+        icon.addEventListener("click", Main.toggleToolbar)
+    }
+    static setCanvasMarginBasedOnScreen = () => {
+        if(window.innerWidth < 1024) {
+            Main.canvasMargin = 4;
+        }
+        if(window.innerWidth < 768) {
+            Main.canvasMargin = 1;
+        }
+    }
+    static addModalListeners = () => {
+        let modalClose = document.getElementById('modal_close');
+        modalClose.addEventListener("click", function() {
+            let modalBody = document.getElementById('explanation_modal_background');
+            modalBody.style.display = 'none';
+        });
+
+        let modalOpen = document.getElementsByClassName('help_icon')[0];
+        modalOpen.addEventListener("click", function() {
+            let modalBody = document.getElementById('explanation_modal_background');
+            modalBody.style.display = 'flex';
+        });
+
+    }
+    static addNumberLengthListener = () => {
+        let numberLength = document.getElementById('numberLength');
+        let decreaseLength = document.getElementById('decreaseLength');
+        decreaseLength.addEventListener("click", function(){
+            let number = Number(numberLength.innerHTML);
+            if(number > 1) {
+                number = number/2;
+                numberLength.innerHTML = number;
+            }
+        })
+        let increaseLength = document.getElementById('increaseLength');
+        increaseLength.addEventListener("click", function() {
+            let number = Number(numberLength.innerHTML);
+            if(number < 128) {
+                number = number*2;
+                numberLength.innerHTML = number;
+            }
+        })
     }
     static generateSetOfNumbers= () => {
         Sorting.isRunning = false;
         let rangeMin = document.getElementById('rangeMin');
         let rangeMax = document.getElementById('rangeMax');
         let numberLength = document.getElementById('numberLength');
-        let numbers = Main.generateNumbers(Number(numberLength.value), Number(rangeMin.value), Number(rangeMax.value));
+        let numbersLength = Number(numberLength.innerHTML);
+        switch(numbersLength) {
+            case 128:
+                Main.timer = 4;
+                break;
+            case 64:
+                Main.timer = 16;
+                break;
+            case 32:
+                Main.timer = 32;
+                break;
+            case 16:
+                Main.timer = 64;
+                break;
+            case 8:
+                Main.timer = 128;
+                break;
+            case 4:
+                Main.timer = 256;
+                break;
+            case 2:
+                Main.timer = 512;
+                break;
+        }
+        let numbers = Main.generateNumbers(numbersLength, Number(rangeMin.value), Number(rangeMax.value));
         Main.drawBars(numbers, Main.canvas);
     }
     static addGenerateNumbersListener = () => {
-        document.getElementById('generate').addEventListener("click", function () { Main.generateSetOfNumbers();})
+        document.getElementById('generate_shortcut').addEventListener("click", Main.generateSetOfNumbers);
+        document.getElementById('generate').addEventListener("click", Main.generateSetOfNumbers);
 
     }
     static addSortListeners = () => {
@@ -53,6 +150,14 @@ class Main
                 buttons[i].addEventListener("click", function() {Sorting.sort(sortingAlg, Main.numbers)});
             }
         }
+        let toolbarShortcuts = document.getElementsByClassName('sort_shortcut');
+        for(let i = 0; i<toolbarShortcuts.length; i++) {
+            if(toolbarShortcuts[i].dataset && toolbarShortcuts[i].dataset.sort) {
+                let sortingAlg = toolbarShortcuts[i].dataset.sort;
+                toolbarShortcuts[i].addEventListener("click", function() {Sorting.sort(sortingAlg, Main.numbers)});
+            }
+        }
+
     }
     static addSpeedListeners = () =>
     {
@@ -98,7 +203,7 @@ class Main
         Main.canvas = [];
         Main.bars = [];
         Main.numbers = [];
-        Main.timer = 512;
+        Main.timer = 2;
         Main.steps = [];
 
         let mainCanvas = document.getElementById('sortingCanvas');
