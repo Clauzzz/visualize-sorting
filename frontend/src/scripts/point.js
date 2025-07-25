@@ -1,24 +1,18 @@
-class Point
-{
-    constructor(x,y)
-    {
+window.Point = class Point {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
     }
-    setX(x)
-    {
+    setX(x) {
         this.x = x;
     }
-    setY(y)
-    {
-        this.y=y;
+    setY(y) {
+        this.y = y;
     }
-    getX()
-    {
+    getX() {
         return this.x;
     }
-    getY()
-    {
+    getY() {
         return this.y;
     }
 }
